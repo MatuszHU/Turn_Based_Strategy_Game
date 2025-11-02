@@ -150,6 +150,15 @@ function BattleManager:attack(target)
     end
 
     local attacker = self.selectedCharacter
+
+    local dist = math.abs(attacker.gridX - target.gridX) + math.abs(attacker.gridY - target.gridY)
+    local range = attacker.stats.attackRange or 1
+    if dist > range then
+        print(string.format("%s cannot reach %s (distance %d, range %d)", attacker.name, target.name, dist, range))
+        return
+    end
+
+    -- Attack execution
     local damage = self:calculateDamage(attacker, target)
     target.stats.hp = math.max(0, target.stats.hp - damage)
     print(attacker.name .. " attacks " .. target.name .. " for " .. damage .. " damage! HP left: " .. target.stats.hp)
@@ -194,7 +203,6 @@ function BattleManager:attack(target)
         self.characterManager:clearHighlight()
     end
 
-
     if self:checkEndOfTurn() then
         self:endTurn()
     end
@@ -219,8 +227,9 @@ function BattleManager:enterAttackPhase()
     local attackRange = char.stats.attackRange or 1
     local enemies = {}
 
-    -- find all enemies within range
-    for _, enemy in ipairs(self.players[2].team) do
+    local currentPlayer = self:getCurrentPlayer()
+    local enemyPlayer = (self.currentPlayerIndex == 1) and self.players[2] or self.players[1]
+    for _, enemy in ipairs(enemyPlayer.team) do
         if not enemy.isDefeated then
             local dx = math.abs(enemy.gridX - char.gridX)
             local dy = math.abs(enemy.gridY - char.gridY)
@@ -235,6 +244,7 @@ function BattleManager:enterAttackPhase()
         self.characterManager.gridManager:highlightCells(enemies, 1, 0, 0, 0.4)
     else
         print("No enemies in attack range.")
+        self.phase = Phase.MOVE
     end
 end
 
@@ -251,13 +261,7 @@ function BattleManager:passTurn()
         end
     end
 
-    -- move to next player's turn
-    self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
-    self.phase = Phase.SELECT
-
-    if self.characterManager then
-        self.characterManager:clearHighlight()
-    end
+    self:endTurn()
 end
 
 function BattleManager:passCharacterTurn()
@@ -272,8 +276,7 @@ function BattleManager:passCharacterTurn()
     end
 
     -- mark character as acted
-    selected.hasActed = true
-    table.insert(self.actedCharacters, selected)
+    self.actedCharacters[selected] = true
 
     print(string.format("[DEBUG] %s passed their turn.", selected.name or "Unnamed"))
 
@@ -282,13 +285,7 @@ function BattleManager:passCharacterTurn()
     self.phase = Phase.SELECT
 
     -- check if all characters on this team have acted
-    local allActed = true
-    for _, c in ipairs(activePlayer.team) do
-        if not c.hasActed then
-            allActed = false
-            break
-        end
-    end
+    local allActed = self:checkEndOfTurn()
 
     if allActed then
         print("[DEBUG] All characters have acted. Passing turn to next player.")
@@ -322,9 +319,13 @@ function BattleManager:endTurn()
     print(self:getCurrentPlayer().name .. "'s turn ended.")
     self.phase = Phase.END_TURN
 
-    self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
     self.actedCharacters = {}
+    self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
     self.phase = Phase.SELECT
+
+    if self.characterManager then
+        self.characterManager:clearHighlight()
+    end
     print("Now it's " .. self:getCurrentPlayer().name .. "'s turn!")
 end
 
