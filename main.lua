@@ -148,7 +148,7 @@ function love.draw()
         grid:draw()
         characters:highlightReachable()
         characters:draw()
-        love.graphics.setBackgroundColor(74,103,65,1)
+        love.graphics.setBackgroundColor(74/255,140/255,65/255,1)
         
     end
 
