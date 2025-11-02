@@ -111,11 +111,17 @@ function Game:mousepressed(x, y, button)
 end
 
 function Game:keypressed(key)
-     if self.battleManager.isBattleOver and key == "k" then
-        self.battleManager:endBattle()
-     end
+    if self.battleManager.isBattleOver and key == "k" then
+       self.battleManager:endBattle()
+    end
+    if key == "a" then
+        self.battleManager:enterAttackPhase()
+    end
+    if key == "p" and not love.keyboard.isDown("lshift", "rshift") then
+        self.battleManager:passCharacterTurn()
+    elseif key == "p" and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+        self.battleManager:passTurn()
+    end
 end
-
-
 
 return Game

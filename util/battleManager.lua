@@ -67,7 +67,6 @@ function BattleManager:endBattle()
             else
                 self.playerRoster.nameManager:removeName(c.name)
             end
-            
         end
     end
     self.characterManager.characters = newList
@@ -109,7 +108,6 @@ function BattleManager:selectCharacter(char)
         print(char.name .. " has already acted this turn.")
         return false
     end
-    
     self.selectedCharacter = char
     self.phase = Phase.MOVE
     print("Selected " .. char.name .. " to act.")
@@ -192,8 +190,113 @@ function BattleManager:attack(target)
         return
     end
 
+    if self.characterManager then
+        self.characterManager:clearHighlight()
+    end
+
+
     if self:checkEndOfTurn() then
         self:endTurn()
+    end
+end
+
+function BattleManager:enterAttackPhase()
+    if not self.selectedCharacter then
+        print("No character selected to attack.")
+        return
+    end
+
+    if self.phase ~= Phase.MOVE and self.phase ~= Phase.SELECT then
+        print("Cannot enter attack phase right now.")
+        return
+    end
+
+    self.phase = Phase.ATTACK
+    print(self.selectedCharacter.name .. " is preparing to attack!")
+
+    -- optional: highlight enemies in range
+    local char = self.selectedCharacter
+    local attackRange = char.stats.attackRange or 1
+    local enemies = {}
+
+    -- find all enemies within range
+    for _, enemy in ipairs(self.players[2].team) do
+        if not enemy.isDefeated then
+            local dx = math.abs(enemy.gridX - char.gridX)
+            local dy = math.abs(enemy.gridY - char.gridY)
+            if (dx + dy) <= attackRange then
+                table.insert(enemies, { x = enemy.gridX, y = enemy.gridY })
+            end
+        end
+    end
+
+    if #enemies > 0 then
+        self.characterManager.reachableCells = nil
+        self.characterManager.gridManager:highlightCells(enemies, 1, 0, 0, 0.4)
+    else
+        print("No enemies in attack range.")
+    end
+end
+
+function BattleManager:passTurn()
+    if self.isBattleOver then return end
+
+    print("Turn passed by " .. self.players[self.currentPlayerIndex].name)
+
+    -- clear any selection and highlights
+    if self.characterManager then
+        self.selectedCharacter = nil
+        if self.characterManager.gridManager and self.characterManager.gridManager.clearHighlight then
+            self.characterManager.gridManager:clearHighlight()
+        end
+    end
+
+    -- move to next player's turn
+    self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
+    self.phase = Phase.SELECT
+
+    if self.characterManager then
+        self.characterManager:clearHighlight()
+    end
+end
+
+function BattleManager:passCharacterTurn()
+    if self.isBattleOver then return end
+
+    local activePlayer = self.players[self.currentPlayerIndex]
+    local selected = self.selectedCharacter
+
+    if not selected then
+        print("[DEBUG] No character selected to pass turn for.")
+        return
+    end
+
+    -- mark character as acted
+    selected.hasActed = true
+    table.insert(self.actedCharacters, selected)
+
+    print(string.format("[DEBUG] %s passed their turn.", selected.name or "Unnamed"))
+
+    -- deselect and reset phase
+    self.selectedCharacter = nil
+    self.phase = Phase.SELECT
+
+    -- check if all characters on this team have acted
+    local allActed = true
+    for _, c in ipairs(activePlayer.team) do
+        if not c.hasActed then
+            allActed = false
+            break
+        end
+    end
+
+    if allActed then
+        print("[DEBUG] All characters have acted. Passing turn to next player.")
+        self:passTurn()  -- move to next player
+    end
+
+    if self.characterManager then
+        self.characterManager:clearHighlight()
     end
 end
 
