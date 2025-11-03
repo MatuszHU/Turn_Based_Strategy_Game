@@ -100,8 +100,6 @@ end
 function love.load()
     love.window.setFullscreen(true)
     background = love.graphics.newImage("assets/backgrounds/medievalBG.jpg")
-    --settings = settingsView()
-
     love.window.setTitle("CS2 Nagy Projekt")
     buttons.menu.play = Button("Start", loadMap, "ForestCamp", 150, 40)
     buttons.menu.continue = Button("Continue", nil, nil, 150, 40)
