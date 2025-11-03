@@ -45,6 +45,9 @@ function Game:draw()
     local currentPlayer = self.battleManager.players[self.battleManager.currentPlayerIndex]
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Current Player: " .. currentPlayer.name, 10, 10)
+    local currentPhase = self.battleManager.phase
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Current Player: " .. currentPhase, 10, 40)
 
     if self.battleManager.isBattleOver then
             local winner = self.battleManager.winner or "Unknown"
