@@ -301,8 +301,13 @@ end
 function BattleManager:calculateDamage(attacker, target)
     local atk = (attacker.stats and attacker.stats.attack) or 0
     local def = (target.stats and target.stats.defense) or 0
-    local dmg = atk - def
-    return math.max(0, dmg)
+    local baseDamage = math.max(0, atk - def)
+
+    if effectImplementations.berserkTurns and effectImplementations.berserkTurns.modifyOutgoingDamage then
+        baseDamage = effectImplementations.berserkTurns.modifyOutgoingDamage(baseDamage, attacker)
+    end
+
+    return baseDamage
 end
 
 function BattleManager:checkEndOfTurn()
@@ -322,7 +327,12 @@ function BattleManager:endTurn()
 
     for _, player in ipairs(self.players) do
         for _, char in ipairs(player.team) do
-            effectImplementations:updateEffects(char)
+            for effectName, effData in pairs(char.effects or {}) do
+                local impl = effectImplementations[effectName]
+                if impl and impl.onTurnEnd then
+                    impl.onTurnEnd(char)
+                end
+            end
         end
     end
 
