@@ -28,6 +28,7 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
         baseStats = {},
         bonusStats = {},
         stats = {},
+        effects = {},
         spriteIndex = 1,
         isDefeated = false,
         offsetX = 0,

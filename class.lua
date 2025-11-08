@@ -6,7 +6,7 @@ return {
             defense = 2,
             resistance = 2,
             accuracy = 2
-        }
+        },
     },
     cavalry = {
         name = "cavalry",
@@ -25,7 +25,7 @@ return {
             magic = 6,
             resistance = 3,
             accuracy = 4
-        }
+        },
     },
     priest = {
         name = "priest",
@@ -37,7 +37,7 @@ return {
             evasion = 5,
             luck = 1,
             movement = 1
-        }
+        },
     },
     thief = {
         name = "thief",
@@ -45,6 +45,6 @@ return {
             luck = 10,
             fow = 2,
             movement = 3
-        }
+        },
     }
 }

@@ -4,6 +4,7 @@ BattleManager.__index = BattleManager
 
 local Phase = require "../enums.battlePhases"
 local PlayerRoster = require "util.playerRoster"
+local effectImplementations = require "util.effectImplementations"
 
 
 function BattleManager:new(characterManager)
@@ -318,6 +319,12 @@ end
 function BattleManager:endTurn()
     print(self:getCurrentPlayer().name .. "'s turn ended.")
     self.phase = Phase.END_TURN
+
+    for _, player in ipairs(self.players) do
+        for _, char in ipairs(player.team) do
+            effectImplementations:updateEffects(char)
+        end
+    end
 
     self.actedCharacters = {}
     self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
