@@ -5,7 +5,7 @@ return {
         passive = false,
         effect = function(user)
 
-            local damage = math.floor((user.stats.magic or 0) * 1.10)
+            local damage = math.floor(user.stats.magic * 1.10)
 
             if math.random() < 0.15 then
                 target.effects.burn = 1
@@ -19,7 +19,7 @@ return {
         passive = false,
         effect = function(user)
 
-            local damage = math.floor((user.stats.magic or 0) * 1.10)
+            local damage = math.floor(user.stats.magic * 1.10)
 
             if math.random() < 0.20 then
                 target.effects.freeze = 1
