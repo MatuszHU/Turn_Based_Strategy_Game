@@ -9,6 +9,7 @@ local TurnManager = require "util.battle.turnManager"
 local AbilityManager = require "util.battle.abilityManager"
 local CombatManager = require "util.battle.combatManager"
 local SelectionManager = require "util.battle.selectionManager"
+local BattleFlow = require "util.battleFlow"
 
 
 
@@ -38,6 +39,7 @@ function BattleManager:new(characterManager)
     self.ability = AbilityManager:new(self)
     self.combat = CombatManager:new(self)
     self.selection = SelectionManager:new(self)
+    self.battleFlow = BattleFlow:new(self)
 
 
     return self
@@ -49,23 +51,7 @@ function BattleManager:assignTeams(playerTeam, aiTeam)
 end
 
 function BattleManager:startBattle()
-    self.phase = Phase.SELECT
-    self.currentPlayerIndex = 1
-    self.actedCharacters = {}
-    self.selectedCharacter = nil
-    self.isBattleOver = false
-    self.winner = nil
-    self.abilityCooldowns = {}
-
-    for _, player in ipairs(self.players) do
-        for _, char in ipairs(player.team) do
-            char.effects = {}
-            char:setStats()
-            char.passivesApplied = nil
-            self:applyPassiveAbilities(char)
-        end
-    end
-    print("Battle started! " .. self:getCurrentPlayer().name .. " goes first.")
+    self.battleFlow:startBattle()
 end
 
 
@@ -76,79 +62,7 @@ function BattleManager:levelUpCharacters()
 end
 
 function BattleManager:endBattle()
-    print("Ending battle...")
-    local playerTeam = self.playerRoster:getTeam()
-
-    if self.winner == "Player" then
-        self.playerWinCount = self.playerWinCount + 1
-    end
-
-    if #playerTeam < 6 then
-        local raceList = {"dwarf", "elf", "human"}
-        local race = raceList[math.random(1, #raceList)]
-        local classList = {"knight", "cavalry", "wizard", "priest", "thief"}
-        local class = classList[math.random(1, #classList)]
-        local newAllyName = self.playerRoster.nameManager:getRandomName(race, "male")
-        local spawnCol = 3 + #playerTeam  -- example offset spawn
-        local spawnRow = 8 + (#playerTeam % 2)
-
-        local newAlly = self.characterManager:addCharacter(
-            newAllyName,
-            race,
-            class,
-            math.random(1, 6),
-            spawnCol,
-            spawnRow
-        )
-
-        table.insert(playerTeam, newAlly)
-        print("Added new ally:", newAlly.name)
-    end
-
-
-    -- === Restore and reuse player roster ===
-    for _, char in ipairs(self.playerRoster:getTeam()) do
-        char.effects = {}
-    end
-
-    self.playerRoster:resetAfterBattle()
-
-    local newList = {}
-    for _, c in ipairs(self.characterManager.characters) do
-        local isRosterChar = false
-        for _, pc in ipairs(self.playerRoster:getTeam()) do
-            if c == pc then
-                isRosterChar = true
-                table.insert(newList, c)
-                break
-            end
-        end
-        
-        if not isRosterChar then
-            self.playerRoster.nameManager:removeName(c.name)
-        end
-    end
-    self.characterManager.characters = newList
-
-    local aiTeam = {}
-    local aiTeamSize = math.random(#playerTeam, (#playerTeam + 2))  -- variable difficulty, can adjust later
-    for i = 1, aiTeamSize do
-        local name = self.playerRoster.nameManager:getRandomName("orc", "male")
-        local raceList = {"orc", "goblin"}
-        local race = raceList[math.random(1, #raceList)]
-        local classList = {"knight", "cavalry", "wizard", "priest", "thief"}
-        local class = classList[math.random(1, #classList)]
-        local x = 25 + love.math.random(0, 3)
-        local y = 5 + love.math.random(0, 10)
-        local aiChar = self.characterManager:addCharacter(name, race, class, math.random(1, 6), x, y)
-        table.insert(aiTeam, aiChar)
-    end
-
-    self.characterManager:clearHighlight()
-    self:assignTeams(self.playerRoster:getTeam(), aiTeam)
-
-    self:startBattle()
-    print("A new battle begins! Your roster returns to fight again!")
+    self.battleFlow:endBattle()
 end
 
 function BattleManager:getCurrentPlayer()
