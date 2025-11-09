@@ -2,9 +2,10 @@
 local BattleManager = {}
 BattleManager.__index = BattleManager
 
-local Phase = require "../enums.battlePhases"
+local Phase = require "enums.battlePhases"
 local PlayerRoster = require "util.playerRoster"
 local effectImplementations = require "util.effectImplementations"
+local TurnManager = require "util.battle.turnManager"
 
 
 function BattleManager:new(characterManager)
@@ -28,6 +29,10 @@ function BattleManager:new(characterManager)
     self.playerWinCount = 0
     self.extradmg = 0
     self.abilityCooldowns = {}
+
+    self.turn = TurnManager:new(self)
+
+
     return self
 end
 
@@ -44,19 +49,15 @@ function BattleManager:startBattle()
     self.isBattleOver = false
     self.winner = nil
     self.abilityCooldowns = {}
-    
+
     for _, player in ipairs(self.players) do
         for _, char in ipairs(player.team) do
             char.effects = {}
-            
             char:setStats()
-            
             char.passivesApplied = nil
-            
             self:applyPassiveAbilities(char)
         end
     end
-    
     print("Battle started! " .. self:getCurrentPlayer().name .. " goes first.")
 end
 
@@ -144,7 +145,7 @@ function BattleManager:endBattle()
 end
 
 function BattleManager:getCurrentPlayer()
-    return self.players[self.currentPlayerIndex]
+    return self.turn:getCurrentPlayer()
 end
 
 function BattleManager:isCharacterOnCurrentTeam(char)
@@ -349,52 +350,11 @@ function BattleManager:enterUseAbilityPhase()
 end
 
 function BattleManager:passTurn()
-    if self.isBattleOver then return end
-
-    print("Turn passed by " .. self.players[self.currentPlayerIndex].name)
-
-    -- clear any selection and highlights
-    if self.characterManager then
-        self.selectedCharacter = nil
-        if self.characterManager.gridManager and self.characterManager.gridManager.clearHighlight then
-            self.characterManager.gridManager:clearHighlight()
-        end
-    end
-
-    self:endTurn()
+    return self.turn:passTurn()
 end
 
 function BattleManager:passCharacterTurn()
-    if self.isBattleOver then return end
-
-    local activePlayer = self.players[self.currentPlayerIndex]
-    local selected = self.selectedCharacter
-
-    if not selected then
-        print("[DEBUG] No character selected to pass turn for.")
-        return
-    end
-
-    -- mark character as acted
-    self.actedCharacters[selected] = true
-
-    print(string.format("[DEBUG] %s passed their turn.", selected.name or "Unnamed"))
-
-    -- deselect and reset phase
-    self.selectedCharacter = nil
-    self.phase = Phase.SELECT
-
-    -- check if all characters on this team have acted
-    local allActed = self:checkEndOfTurn()
-
-    if allActed then
-        print("[DEBUG] All characters have acted. Passing turn to next player.")
-        self:passTurn()  -- move to next player
-    end
-
-    if self.characterManager then
-        self.characterManager:clearHighlight()
-    end
+    return self.turn:passCharacterTurn()
 end
 
 function BattleManager:applyPassiveAbilities(char)
@@ -491,55 +451,11 @@ function BattleManager:calculateDamage(attacker, target)
 end
 
 function BattleManager:checkEndOfTurn()
-    local allActed = true
-    for _, char in ipairs(self:getCurrentPlayer().team) do
-        if (not self.actedCharacters[char]) and (not char.isDefeated) then
-            allActed = false
-            break
-        end
-    end
-    return allActed
+    return self.turn:checkEndOfTurn()
 end
 
 function BattleManager:endTurn()
-    local currentPlayer = self:getCurrentPlayer()
-    print(currentPlayer.name .. "'s turn ended.")
-    self.phase = Phase.END_TURN
-
-    for _, char in ipairs(currentPlayer.team) do
-        if self.abilityCooldowns[char] then
-            for abilityKey, cooldown in pairs(self.abilityCooldowns[char]) do
-                if cooldown > 0 then
-                    self.abilityCooldowns[char][abilityKey] = cooldown - 1
-                    if self.abilityCooldowns[char][abilityKey] == 0 then
-                        local ability = char.abilities[abilityKey]
-                        if ability then
-                            print("  " .. char.name .. "'s " .. ability.name .. " is ready!")
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    for _, char in ipairs(currentPlayer.team) do
-        for effectName, effData in pairs(char.effects or {}) do
-            local impl = effectImplementations[effectName]
-            if impl and impl.onTurnEnd then
-                impl.onTurnEnd(char)
-            end
-        end
-    end
-
-    self.actedCharacters = {}
-    self.currentPlayerIndex = (self.currentPlayerIndex % #self.players) + 1
-    self.phase = Phase.SELECT
-
-    if self.characterManager then
-        self.characterManager:clearHighlight()
-    end
-    
-    print("Now it's " .. self:getCurrentPlayer().name .. "'s turn!")
+    return self.turn:endTurn()
 end
 
 

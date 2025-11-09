@@ -1,7 +1,7 @@
 -- game.lua
 local GridManager = require "util.gridManager"
 local CharacterManager = require "util.characterManager"
-local BattleManager = require "util.battleManager"
+local BattleManager = require "util.battle.battleManager"
 local Phase = require "../enums.battlePhases"
 local effectImplementations = require "util.effectImplementations"
 
