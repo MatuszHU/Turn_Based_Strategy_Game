@@ -20,7 +20,11 @@ function CombatManager:attack(attacker, target)
     print(attacker.name .. " attacks " .. target.name .. "!")
 
     local dmg = self:calculateDamage(attacker, target)
-    target.hp = math.max(target.hp - dmg, 0)
+    if self:isCrit(attacker)
+        target.hp = math.max(target.hp - (dmg * 2), 0)
+    else
+        target.hp = math.max(target.hp - dmg, 0)
+    end
 
     print(string.format("  %s deals %d damage. (%d HP left)", attacker.name, dmg, target.hp))
 
@@ -30,6 +34,15 @@ function CombatManager:attack(attacker, target)
 
     -- Reset extra damage after each attack
     battle.extradmg = 0
+end
+
+function CombatManager:isCrit(attacker)
+    local critrate = attacker.luck / 100
+    if math.random() < critrate
+        return true
+    else
+        return false
+    end
 end
 
 --------------------------------------------------------
