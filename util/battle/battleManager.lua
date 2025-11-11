@@ -9,7 +9,8 @@ local TurnManager = require "util.battle.turnManager"
 local AbilityManager = require "util.battle.abilityManager"
 local CombatManager = require "util.battle.combatManager"
 local SelectionManager = require "util.battle.selectionManager"
-local BattleFlow = require "util.battleFlow"
+local EffectManager = require "util.battle.effectManager"
+local BattleFlow = require "util.battle.battleFlow"
 
 
 
@@ -40,6 +41,7 @@ function BattleManager:new(characterManager)
     self.combat = CombatManager:new(self)
     self.selection = SelectionManager:new(self)
     self.battleFlow = BattleFlow:new(self)
+    self.effectManager = EffectManager:new(self, effectImplementations)
 
 
     return self
