@@ -207,4 +207,29 @@ effectImplementations.mindFocusTurns = {
     end
 }
 
+effectImplementations.curseTurns = {
+    apply = function(character)
+        if not character.effects.curseTurns then
+            character.effects.curseTurns = { remaining = 3, active = true }
+            character.stats.attack = math.max(0, (character.stats.attack or 0) - 5)
+            character.stats.magic = math.max(0, (character.stats.magic or 0) - 5)
+            print(character.name .. " is weakened by a curse! ATK and MAG reduced.")
+        end
+    end,
+
+    onTurnEnd = function(character)
+        local eff = character.effects.curseTurns
+        if eff and eff.active then
+            eff.remaining = eff.remaining - 1
+            if eff.remaining <= 0 then
+                eff.active = false
+                character.stats.attack = (character.stats.attack or 0) + 5
+                character.stats.magic = (character.stats.magic or 0) + 5
+                character.effects.curseTurns = nil
+                print(character.name .. "'s Curse of Weakness fades.")
+            end
+        end
+    end
+}
+
 return effectImplementations
