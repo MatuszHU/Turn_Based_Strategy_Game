@@ -25,11 +25,9 @@ function SelectionManager:selectCharacter(char)
 
     if not battle:isCharacterOnCurrentTeam(char) then print('Can not move with an opponent') return end
 
-    for _, acted in ipairs(battle.actedCharacters) do
-        if acted == char then
-            print(char.name .. " has already acted this turn.")
-            return
-        end
+    if battle.actedCharacters[char] then
+        print(char.name .. " has already acted this turn.")
+        return
     end
 
     if char.stats.hp == 0 then print('That character is knocked out.') return end
