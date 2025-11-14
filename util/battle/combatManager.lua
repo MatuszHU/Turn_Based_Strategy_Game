@@ -22,7 +22,7 @@ function CombatManager:attack(attacker, target)
     local dx = math.abs(attacker.gridX - target.gridX)
     local dy = math.abs(attacker.gridY - target.gridY)
     local distance = dx + dy  -- Manhattan distance, change to math.sqrt(dx*dx + dy*dy) for Euclidean
-    if distance > (attacker.stats.attackrange or 1) then
+    if distance > (attacker.stats.attackRange or 1) then
         print(attacker.name .. " cannot reach " .. target.name .. " (out of range).")
         return
     end

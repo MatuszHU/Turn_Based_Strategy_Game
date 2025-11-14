@@ -12,15 +12,11 @@ local SelectionManager = require "util.battle.selectionManager"
 local EffectManager = require "util.battle.effectManager"
 local BattleFlow = require "util.battle.battleFlow"
 
-
-
 function BattleManager:new(characterManager)
     local self = setmetatable({}, BattleManager)
     self.characterManager = characterManager
     self.phase = Phase.IDLE
-
     self.playerRoster = PlayerRoster:new(self.characterManager)
-
 
     self.players = {
         { id = 1, name = "Player", team  = self.playerRoster:getTeam() },
@@ -42,8 +38,6 @@ function BattleManager:new(characterManager)
     self.selectionManager = SelectionManager:new(self)
     self.battleFlow = BattleFlow:new(self)
     self.effectManager = EffectManager:new(self, effectImplementations)
-
-
     return self
 end
 
@@ -61,7 +55,6 @@ end
 function BattleManager:startBattle()
     self.battleFlow:startBattle()
 end
-
 
 function BattleManager:levelUpCharacters()
     for _, char in ipairs(self.playerRoster:getTeam()) do
@@ -162,7 +155,6 @@ end
 function BattleManager:endTurn()
     return self.turnManager:endTurn()
 end
-
 
 function BattleManager:update(dt)
     -- Future: AI logic
