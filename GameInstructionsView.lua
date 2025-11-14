@@ -15,7 +15,7 @@ local function GameInstructionsView()
         love.graphics.printf("Step 3: Move your character one of the highlighted fields", 0, 100, w, "center")
         love.graphics.printf("Step 4: If it is possible, perform an attack by clicking to an enemy character", 0, 130, w, "center")
         love.graphics.printf("Step 5: If you move with all your characters, then it switches to the enemy turn", 0, 160, w, "center")
-        love.graphics.printf("Shortcuts: Action = Key \nSkip character turn = p\nSkip your turn = shift+p\nEnter attack phase = a\nExtra: Divine Intervention = u", 0, 220, w, "center")
+        love.graphics.printf("Shortcuts: Action = Key \nSkip character turn = p\nSkip your turn = shift+p\nEnter attack phase = a\nDivine Intervention = i\nEnter use ability phase = u\nDeselect selected character = d\nRestart game = r", 0, 220, w, "center")
     end
 
     return self
