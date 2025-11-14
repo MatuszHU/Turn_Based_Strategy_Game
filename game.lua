@@ -97,7 +97,7 @@ function Game:mousepressed(x, y, button)
                 print("Cannot attack allies.")
                 return
             end
-            self.battleManager:attack(clicked)
+            self.battleManager:attack(selected, clicked)
         end
         return
     end

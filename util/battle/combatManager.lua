@@ -18,17 +18,22 @@ function CombatManager:attack(attacker, target)
     end
 
     print(attacker.name .. " attacks " .. target.name .. "!")
+    print("Attacker stats table:", attacker.stats)
+    print("Target stats table:", target.stats)
+    print("Attacker ATK:", attacker.stats.attack)
+    print("Target DEF:", target.stats.defense)
+
 
     local dmg = self:calculateDamage(attacker, target)
     if self:isCrit(attacker) then
-        target.hp = math.max(target.hp - (dmg * 2), 0)
+        target.stats.hp = math.max(target.stats.hp - (dmg * 2), 0)
     else
-        target.hp = math.max(target.hp - dmg, 0)
+        target.stats.hp = math.max(target.stats.hp - dmg, 0)
     end
 
-    print(string.format("  %s deals %d damage. (%d HP left)", attacker.name, dmg, target.hp))
+    print(string.format("  %s deals %d damage. (%d HP left)", attacker.name, dmg, target.stats.hp))
 
-    if target.hp <= 0 then
+    if target.stats.hp <= 0 then
         self:checkCharacterDeath(target)
     end
 
@@ -37,7 +42,7 @@ function CombatManager:attack(attacker, target)
 end
 
 function CombatManager:isCrit(attacker)
-    local critrate = attacker.luck / 100
+    local critrate = attacker.stats.luck / 100
     if math.random() < critrate then
         return true
     else
@@ -50,8 +55,13 @@ end
 --------------------------------------------------------
 function CombatManager:calculateDamage(attacker, target)
     local effectManager = self.battle.effectManager
-    local base = attacker.atk or 0
-    local defense = target.def or 0
+    local base = attacker.stats.attack or 0
+    local defense = target.stats.defense or 0
+    print("CD Attacker stats:", attacker.stats)
+    print("CD Target stats:", target.stats)
+    print("CD Attacker ATK:", attacker.stats.attack)
+    print("CD Target DEF:", target.stats.defense)
+
     local bonus = self.battle.extradmg or 0
 
     local dmg = math.max((base - defense) + bonus, 0)

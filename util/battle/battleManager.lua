@@ -48,8 +48,7 @@ function BattleManager:new(characterManager)
 end
 
 function BattleManager:assignTeams(playerTeam, aiTeam)
-    self.players[1].team = playerTeam or {}
-    self.players[2].team = aiTeam or {}
+    self.battleFlow:assignTeams(playerTeam, aiTeam)
 end
 
 function BattleManager:startBattle()
@@ -111,8 +110,8 @@ function BattleManager:moveCharacter(gridX, gridY)
     print("Cannot move there!")
 end
 
-function BattleManager:attack(target)
-    return self.combatManager:attack(target)
+function BattleManager:attack(attacker, target)
+    return self.combatManager:attack(attacker, target)
 end
 
 function BattleManager:enterAttackPhase()
