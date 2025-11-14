@@ -15,9 +15,8 @@ end
 --------------------------------------------------------
 -- Select a character on a given grid cell
 --------------------------------------------------------
-function SelectionManager:selectCharacter(cell)
+function SelectionManager:selectCharacter(char)
     local battle = self.battle
-    local char = battle.characterManager:getCharacterAt(cell)
 
     if not char then
         print("No character at this cell.")
