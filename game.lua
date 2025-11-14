@@ -11,8 +11,8 @@ Game.__index = Game
 function Game:new()
     local self = setmetatable({}, Game)
     self:init()
-    self.showHelp = false                             
-    self.helpView = GameInstructionsView()   
+    self.showHelp = false
+    self.helpView = GameInstructionsView()
 
     -- === Create teams ===
     local playerTeam = self.battleManager.playerRoster:getTeam()
@@ -60,7 +60,7 @@ function Game:draw()
         love.graphics.setColor(1, 1, 1)
         love.graphics.printf("Battle Over!", 0, h / 2 - 40, w, "center")
         love.graphics.printf(winner .. " Wins!", 0, h / 2, w, "center")
-        love.graphics.printf("Press 'k' to restart", 0, h / 2 + 40, w, "center")
+        love.graphics.printf("Press 'r' to restart", 0, h / 2 + 40, w, "center")
     end
 
     if self.showHelp then
@@ -147,7 +147,7 @@ function Game:keypressed(key)
         return
     end
 
-    if key == "u" then
+    if key == "i" then
         self.battleManager:divineIntervention()
     end
 
