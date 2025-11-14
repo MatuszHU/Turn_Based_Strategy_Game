@@ -2,6 +2,7 @@ local kabilities = require "util.abilities.knightAbilities"
 local cabilities = require "util.abilities.cavalryAbilities"
 local wabilities = require "util.abilities.wizardAbilities"
 local pabilities = require "util.abilities.priestAbilities"
+local tabilities = require "util.abilities.thiefAbilities"
 
 return {
     knight = {
@@ -26,7 +27,7 @@ return {
             movement = 4,
             attackRange = 1
         },
-        abilities = kabilities
+        abilities = cabilities
     },
     wizard = {
         name = "wizard",
@@ -36,7 +37,7 @@ return {
             accuracy = 4,
             attackRange = 5
         },
-        abilities = kabilities
+        abilities = wabilities
     },
     priest = {
         name = "priest",
@@ -50,7 +51,7 @@ return {
             movement = 1,
             attackRange = 3
         },
-        abilities = kabilities
+        abilities = pabilities
     },
     thief = {
         name = "thief",
@@ -60,6 +61,6 @@ return {
             movement = 3,
             attackRange = 1
         },
-        abilities = kabilities
+        abilities = tabilities
     }
 }
