@@ -1,6 +1,8 @@
 local CombatManager = {}
 CombatManager.__index = CombatManager
 
+local Phase = require "enums.battlePhases"
+
 function CombatManager:new(battle)
     local self = setmetatable({}, CombatManager)
     self.battle = battle
@@ -18,11 +20,6 @@ function CombatManager:attack(attacker, target)
     end
 
     print(attacker.name .. " attacks " .. target.name .. "!")
-    print("Attacker stats table:", attacker.stats)
-    print("Target stats table:", target.stats)
-    print("Attacker ATK:", attacker.stats.attack)
-    print("Target DEF:", target.stats.defense)
-
 
     local dmg = self:calculateDamage(attacker, target)
     if self:isCrit(attacker) then
@@ -39,6 +36,13 @@ function CombatManager:attack(attacker, target)
 
     -- Reset extra damage after each attack
     battle.extradmg = 0
+    self.battle.actedCharacters[attacker] = true
+    print(battle:checkEndOfTurn())
+    if battle:checkEndOfTurn() then
+        battle:endTurn()
+    else
+        battle.phase = Phase.SELECT
+    end
 end
 
 function CombatManager:isCrit(attacker)
@@ -57,11 +61,6 @@ function CombatManager:calculateDamage(attacker, target)
     local effectManager = self.battle.effectManager
     local base = attacker.stats.attack or 0
     local defense = target.stats.defense or 0
-    print("CD Attacker stats:", attacker.stats)
-    print("CD Target stats:", target.stats)
-    print("CD Attacker ATK:", attacker.stats.attack)
-    print("CD Target DEF:", target.stats.defense)
-
     local bonus = self.battle.extradmg or 0
 
     local dmg = math.max((base - defense) + bonus, 0)
@@ -83,26 +82,9 @@ function CombatManager:checkCharacterDeath(target)
     print(target.name .. " has been defeated!")
 
     local battle = self.battle
-    battle.characterManager:removeCharacter(target)
+    target.isDefeated = true
 
-    self:checkVictory()
-end
-
---------------------------------------------------------
--- Checks if one team has won
---------------------------------------------------------
-function CombatManager:checkVictory()
-    local cm = self.battle.characterManager
-    local team1, team2 = cm:getTeams()
-
-    local alive1 = #team1 > 0
-    local alive2 = #team2 > 0
-
-    if not alive1 or not alive2 then
-        local winner = alive1 and "Player 1" or "Player 2"
-        print("🏆 " .. winner .. " wins the battle!")
-        self.battle.phase = require("enums.battlePhases").IDLE
-    end
+    self.battle.battleFlow:checkVictory()
 end
 
 return CombatManager

@@ -51,6 +51,13 @@ function BattleManager:assignTeams(playerTeam, aiTeam)
     self.battleFlow:assignTeams(playerTeam, aiTeam)
 end
 
+function BattleManager:getTeams()
+    local players = self.players  -- reference to the BattleManager's players
+    local team1 = players[1] and players[1].team or {}
+    local team2 = players[2] and players[2].team or {}
+    return team1, team2
+end
+
 function BattleManager:startBattle()
     self.battleFlow:startBattle()
 end
@@ -71,8 +78,14 @@ function BattleManager:getCurrentPlayer()
 end
 
 function BattleManager:isCharacterOnCurrentTeam(char)
-    for _, c in ipairs(self:getCurrentPlayer().team) do
-        if c == char then return true end
+    local player = self:getCurrentPlayer()
+    if not player then
+        return false
+    end
+    for _, c in ipairs(player.team) do
+        if c == char then
+            return true
+        end
     end
     return false
 end
