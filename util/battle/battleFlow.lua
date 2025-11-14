@@ -54,9 +54,9 @@ function BattleFlow:endBattle()
 
     local playerTeam = battle.playerRoster:getTeam()
 
-    if battle.winner == "Player" then
-        battle.playerWinCount = battle.playerWinCount + 1
-    end
+    -- if battle.winner == "Player" then
+    --     battle.playerWinCount = battle.playerWinCount + 1
+    -- end
 
     -- === Add new ally if under 6 members ===
     if #playerTeam < 6 then

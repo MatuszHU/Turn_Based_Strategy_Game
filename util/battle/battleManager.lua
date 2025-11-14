@@ -19,8 +19,8 @@ function BattleManager:new(characterManager)
     self.playerRoster = PlayerRoster:new(self.characterManager)
 
     self.players = {
-        { id = 1, name = "Player", team  = self.playerRoster:getTeam(), isDivineInterventionUsed = false},
-        { id = 2, name = "AI", team = {}, isDivineInterventionUsed = false }
+        { id = 1, name = "Player1", team  = self.playerRoster:getTeam(), isDivineInterventionUsed = false},
+        { id = 2, name = "Player2", team = {}, isDivineInterventionUsed = false }
     }
 
     self.currentPlayerIndex = 1
