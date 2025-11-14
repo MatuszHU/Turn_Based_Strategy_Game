@@ -21,7 +21,7 @@ return {
         cooldown = 3,
         passive = false,
         effect = function(user, target)
-            effectImplementations.curseTurns.apply(user, 3)
+            effectImplementations.curseTurns.apply(target, 3)
         end
     },
     ability4 = {
@@ -33,7 +33,7 @@ return {
         end
     },
     ability5 = {
-        name = "Resurrection",
+        name = "Divine Restoration",
         cooldown = 6,
         passive = false,
         effect = function(user, ally)

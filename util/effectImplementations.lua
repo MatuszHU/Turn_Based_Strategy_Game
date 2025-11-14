@@ -181,25 +181,35 @@ effectImplementations.shieldTurns = {
 }
 
 effectImplementations.mindFocusTurns = {
-    apply = function(character)
-        if not character.effects.mindFocusTurns then
-            character.effects.mindFocusTurns = { remaining = 3, active = true }
+    apply = function(character, duration)
+        ensureEffectsTable(character)
 
-            character.stats.accuracy = (character.stats.accuracy or 0) + 10
-            character.stats.evasion = (character.stats.evasion or 0) + 10
-
-            print(character.name .. " focuses their mind! Accuracy and Evasion increased.")
+        if character.effects.mindFocusTurns then
+            return
         end
+
+        duration = duration or 3
+
+        character.effects.mindFocusTurns = {
+            remaining = duration,
+            active = true
+        }
+
+        character.stats.accuracy = (character.stats.accuracy or 0) + 10
+        character.stats.evasion = (character.stats.evasion or 0) + 10
+
+        print(character.name .. " focuses their mind! (+10 ACC / +10 EVA for " .. duration .. " turns)")
     end,
 
     onTurnEnd = function(character)
         local eff = character.effects.mindFocusTurns
         if eff and eff.active then
             eff.remaining = eff.remaining - 1
+
             if eff.remaining <= 0 then
-                eff.active = false
-                character.stats.accuracy = character.stats.accuracy - 10
-                character.stats.evasion = character.stats.evasion - 10
+                character.stats.accuracy = (character.stats.accuracy or 0) - 10
+                character.stats.evasion = (character.stats.evasion or 0) - 10
+
                 character.effects.mindFocusTurns = nil
                 print(character.name .. "'s concentration fades.")
             end
@@ -208,23 +218,45 @@ effectImplementations.mindFocusTurns = {
 }
 
 effectImplementations.curseTurns = {
-    apply = function(character)
-        if not character.effects.curseTurns then
-            character.effects.curseTurns = { remaining = 3, active = true }
-            character.stats.attack = math.max(0, (character.stats.attack or 0) - 5)
-            character.stats.magic = math.max(0, (character.stats.magic or 0) - 5)
-            print(character.name .. " is weakened by a curse! ATK and MAG reduced.")
+    apply = function(character, duration)
+        ensureEffectsTable(character)
+
+        if character.effects.curseTurns then
+            return
         end
+
+        duration = duration or 3
+
+        character.effects.curseTurns = {
+            remaining = duration,
+            active = true
+        }
+
+        character.stats.attack = math.max(0, (character.stats.attack or 0) - 5)
+        character.stats.magic = math.max(0, (character.stats.magic or 0) - 5)
+        character.stats.defense = math.max(0, (character.stats.defense or 0) - 5)
+        character.stats.resistance = math.max(0, (character.stats.resistance or 0) - 5)
+        character.stats.accuracy = math.max(0, (character.stats.accuracy or 0) - 5)
+        character.stats.evasion = math.max(0, (character.stats.evasion or 0) - 5)
+
+        print(character.name .. " is weakened by a curse! (-5 to all stats for " .. duration .. " turns)")
     end,
 
     onTurnEnd = function(character)
         local eff = character.effects.curseTurns
         if eff and eff.active then
             eff.remaining = eff.remaining - 1
+
             if eff.remaining <= 0 then
                 eff.active = false
+
                 character.stats.attack = (character.stats.attack or 0) + 5
                 character.stats.magic = (character.stats.magic or 0) + 5
+                character.stats.defense = (character.stats.defense or 0) + 5
+                character.stats.resistance = (character.stats.resistance or 0) + 5
+                character.stats.accuracy = (character.stats.accuracy or 0) + 5
+                character.stats.evasion = (character.stats.evasion or 0) + 5
+
                 character.effects.curseTurns = nil
                 print(character.name .. "'s Curse of Weakness fades.")
             end

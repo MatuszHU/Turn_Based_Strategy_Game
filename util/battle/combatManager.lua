@@ -53,6 +53,37 @@ function CombatManager:attack(attacker, target)
     end
 end
 
+function CombatManager:heal(healer, target, amount)
+    local battle = self.battle
+    if not healer or not target then
+        print("CombatManager: Missing healer or target.")
+        return
+    end
+
+    if battle.effectManager:isCharacterDisabled(healer) then
+        print(healer.name .. " is unable to act!")
+        return
+    end
+
+    local healAmount = math.floor(amount)
+    local oldHp = target.stats.hp
+    target.stats.hp = math.min(target.stats.hp + healAmount, target.stats.maxHp)
+
+    print(string.format(
+        "%s heals %s for %d HP. (%d → %d)",
+        healer.name, target.name, healAmount, oldHp, target.stats.hp
+    ))
+
+    battle.actedCharacters[healer] = true
+
+    if battle:checkEndOfTurn() then
+        battle:endTurn()
+    else
+        battle.phase = Phase.SELECT
+    end
+end
+
+
 function CombatManager:isCrit(attacker)
     local critrate = attacker.stats.luck / 100
     if math.random() < critrate then
