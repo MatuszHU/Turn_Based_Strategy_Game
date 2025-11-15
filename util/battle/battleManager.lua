@@ -57,9 +57,7 @@ function BattleManager:startBattle()
 end
 
 function BattleManager:levelUpCharacters()
-    for _, char in ipairs(self.playerRoster:getTeam()) do
-        char:levelUp()
-    end
+    return self.characterManager:levelUpCharacters()
 end
 
 function BattleManager:endBattle()

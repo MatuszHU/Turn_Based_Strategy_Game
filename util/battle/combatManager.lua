@@ -30,8 +30,9 @@ function CombatManager:attack(attacker, target)
     -- TODO fix the attack range stat
     local dx = math.abs(attacker.gridX - target.gridX)
     local dy = math.abs(attacker.gridY - target.gridY)
+    print(attacker.stats.hp)
     local distance = dx + dy  -- Manhattan distance, change to math.sqrt(dx*dx + dy*dy) for Euclidean
-    if distance > (attacker.stats.attackRange or 1) then
+    if distance > attacker.stats.attackRange then
         print(attacker.name .. " cannot reach " .. target.name .. " (out of range).")
         return
     end
@@ -89,7 +90,7 @@ end
 
 
 function CombatManager:isCrit(attacker)
-    local critrate = (attacker.stats.luck or 0) / 100
+    local critrate = attacker.stats.luck / 100
     local crit = (math.random() < critrate)
 
     if attacker.effects.nextAttackCrit then

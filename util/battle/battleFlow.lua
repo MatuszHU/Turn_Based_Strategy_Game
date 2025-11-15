@@ -34,6 +34,7 @@ function BattleFlow:startBattle()
     battle.winner = nil
     battle.abilityCooldowns = {}
     self:resetDivineIntervention()
+    battle:levelUpCharacters()
 
     for _, player in ipairs(battle.players) do
         for _, char in ipairs(player.team) do

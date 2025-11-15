@@ -11,8 +11,7 @@ return {
             attack = 7,
             defense = 2,
             resistance = 2,
-            accuracy = 2,
-            attackRange = 1
+            accuracy = 2
         },
         abilities = kabilities
     },
@@ -24,8 +23,7 @@ return {
             resistance = 7,
             evasion = 5,
             fow = 2,
-            movement = 4,
-            attackRange = 1
+            movement = 4
         },
         abilities = cabilities
     },
@@ -35,7 +33,7 @@ return {
             magic = 6,
             resistance = 3,
             accuracy = 4,
-            attackRange = 5
+            attackRange = 4
         },
         abilities = wabilities
     },
@@ -49,7 +47,7 @@ return {
             evasion = 5,
             luck = 1,
             movement = 1,
-            attackRange = 3
+            attackRange = 2
         },
         abilities = pabilities
     },
@@ -59,7 +57,6 @@ return {
             luck = 10,
             fow = 2,
             movement = 3,
-            attackRange = 1
         },
         abilities = tabilities
     }
