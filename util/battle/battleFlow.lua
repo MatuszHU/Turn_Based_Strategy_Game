@@ -61,7 +61,7 @@ function BattleFlow:endBattle()
     -- === Add new ally if under 6 members ===
     if #playerTeam < 6 then
         local raceList = {"dwarf", "elf", "human"}
-        local classList = {"knight", "cavalry", "wizard", "priest", "thief"}
+        local classList = {"knight", "cavalry", "wizard", "priest"}
 
         local race = raceList[math.random(#raceList)]
         local class = classList[math.random(#classList)]
@@ -104,7 +104,7 @@ function BattleFlow:endBattle()
     local aiTeam = {}
     local aiTeamSize = math.random(#playerTeam, #playerTeam + 2)
     local raceList = {"orc", "goblin"}
-    local classList = {"knight", "cavalry", "wizard", "priest", "thief"}
+    local classList = {"knight", "cavalry", "wizard", "priest"}
 
     for i = 1, aiTeamSize do
         local name = battle.playerRoster.nameManager:getRandomName("orc", "male")

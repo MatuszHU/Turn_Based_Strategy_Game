@@ -14,7 +14,6 @@ function PlayerRoster:new(characterManager)
         characterManager:addCharacter(self.nameManager:getRandomName("human", "male"), "human", "cavalry", 1, 5, 4),
         characterManager:addCharacter(self.nameManager:getRandomName("human", "male"), "human", "wizard", 1, 6, 5),
         characterManager:addCharacter(self.nameManager:getRandomName("human", "male"), "dwarf", "priest", 1, 7, 5),
-        characterManager:addCharacter(self.nameManager:getRandomName("human", "male"), "human", "thief", 1, 5, 5),
     }
 
     return self
