@@ -150,7 +150,8 @@ function love.keypressed(key)
         recruitView:keypressed(key)
         return
     end
-
+    --Teszt integráció a recruit nézethez
+    --TODO rendes integráció start gombtól
     if key == "y" then
         recruitView = RecruitView:new(characterManager, function(selectedChar)
             playerRoster:addCharacter(
