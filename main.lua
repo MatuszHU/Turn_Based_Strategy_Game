@@ -6,12 +6,10 @@ local font = require "util.fonts"
 local characterManager = require "util.characterManager"
 local playerRoster = require "util.playerRoster"
 local RecruitView = require "recruitView"
-local GameManager = require "game" -- refaktorálni kell majd a maint, hogy amit lehet a game.lua-ból használjon.
-
--- Minden globálisan érvényes érték itt legyen kezelve
+local GameManager = require "game"
 
 local game = {
-    -- Játék állapotok
+
     state = {
         menu = true,
         paused = false,
