@@ -14,19 +14,15 @@ function RecruitView:new(characterManager, onRecruit)
     self.characterManager = characterManager
     self.onRecruit = onRecruit
 
-    self.candidates = self:generateCandidates(10)
+    self.candidates = self:generateCandidates(8)
     self.selected = 1
-
-    self.scrollY = 0
-    self.maxVisible = 7
-    self.itemHeight = 54
     self.listClickableRects = {}
 
     self.recruitButton = Button(
         "Recruit!",
         function() self:recruitSelected() end,
         nil,
-        200, 54
+        240, 58
     )
     return self
 end
@@ -57,106 +53,132 @@ function RecruitView:draw()
     local width  = screenWidth * 0.82
     local height = screenHeight * 0.82
 
-    love.graphics.setColor(0,0,0,0.16)
-    love.graphics.rectangle("fill", x+8, y+12, width, height, 26, 26)
-    love.graphics.setColor(0.17, 0.13, 0.09, 0.96)
-    love.graphics.rectangle("fill", x, y, width, height, 22, 22)
-    love.graphics.setColor(0.55, 0.40, 0.13, 0.68)
-    love.graphics.setLineWidth(8)
-    love.graphics.rectangle("line", x, y, width, height, 22, 22)
+   
+    love.graphics.setColor(0,0,0,0.22)
+    love.graphics.rectangle("fill", x+18, y+18, width, height, 36, 36)
+    love.graphics.setColor(0.09, 0.07, 0.02, 0.97)
+    love.graphics.rectangle("fill", x, y, width, height, 30, 30)
+    love.graphics.setColor(0.4, 0.32, 0.12, 1)
+    love.graphics.setLineWidth(10)
+    love.graphics.rectangle("line", x, y, width, height, 28, 28)
 
-    local listX, listY = x+30, y+30
-    local listW, listH = width*0.36, height-60
-    love.graphics.setColor(0.26, 0.22, 0.15, 1)
-    love.graphics.rectangle("fill", listX, listY, listW, listH, 18, 18)
-    love.graphics.setColor(0.44, 0.37, 0.22, 0.4)
-    love.graphics.setLineWidth(4)
-    love.graphics.rectangle("line", listX, listY, listW, listH, 18, 18)
 
-    love.graphics.setFont(font.big.font)
-    love.graphics.setColor(1, 0.85, 0.5, 0.95)
-    love.graphics.print("Candidates", listX + 32, listY + 12)
+    local listX, listY = x+35, y+35
+    local listW, listH = width*0.345, height-70
+    love.graphics.setColor(0.18, 0.15, 0.10,1)
+    love.graphics.rectangle("fill", listX, listY, listW, listH, 22, 22)
+    love.graphics.setColor(0.94, 0.84, 0.33, 0.17)
+    love.graphics.setLineWidth(6)
+    love.graphics.rectangle("line", listX, listY, listW, listH, 22, 22)
+    love.graphics.setColor(1,0.91,0.55,1)
+    love.graphics.setFont(font.title.font)
+    love.graphics.print("Candidates", listX + 60, listY + 18)
+    love.graphics.setLineWidth(2)
+    love.graphics.setColor(0.87, 0.79, 0.35, 0.25)
+    love.graphics.line(listX+32, listY+65, listX+listW-32, listY+65)
 
+ 
     self.listClickableRects = {}
-    local startIdx = math.max(1, self.selected - math.floor(self.maxVisible/2))
-    local endIdx = math.min(#self.candidates, startIdx + self.maxVisible-1)
-    for idx = startIdx, endIdx do
-        local i = idx
-        local lY = listY + 54 + (i-startIdx)*self.itemHeight
+    local candidateCount = #self.candidates
+    local headerPad = 80
+    local itemHeight = (listH - headerPad - 20) / math.max(candidateCount, 1)
+    for i=1, candidateCount do
+        local lY = listY + headerPad + (i-1)*itemHeight
         local isSelected = (i == self.selected)
         if isSelected then
-            love.graphics.setColor(0.77, 0.66, 0.34, 0.95)
-            love.graphics.rectangle("fill", listX + 12, lY - 6, listW - 24, self.itemHeight-7, 12, 12)
-            love.graphics.setColor(0.33, 0.11, 0, 0.5)
-            love.graphics.setLineWidth(3)
-            love.graphics.rectangle("line", listX + 12, lY - 6, listW - 24, self.itemHeight-7, 12, 12)
+            love.graphics.setColor(0.88, 0.7, 0.19, 0.92)
+            love.graphics.rectangle("fill", listX + 17, lY - 4, listW - 34, itemHeight-4, 14, 14)
+            love.graphics.setColor(0.42, 0.21, 0, 0.62)
+            love.graphics.setLineWidth(4)
+            love.graphics.rectangle("line", listX+17, lY-4, listW-34, itemHeight-4, 14, 14)
         end
-        love.graphics.setColor(1,0.95,0.80,0.98)
-        love.graphics.setFont(font.button.font)
-        love.graphics.print(self.candidates[i].name, listX + 40, lY)
-
+        if i % 2 == 0 then
+            love.graphics.setColor(0.97,0.96,0.85,0.03)
+            love.graphics.rectangle("fill", listX + 17, lY - 4, listW - 34, itemHeight-4, 14, 14)
+        end
+        love.graphics.setFont(isSelected and font.big.font or font.button.font)
+        love.graphics.setColor(isSelected and {0.22,0.13,0.03,1} or {1,0.95,0.80,1})
+        love.graphics.print(self.candidates[i].name, listX + 42, lY)
         table.insert(self.listClickableRects, {
             idx = i,
-            x = listX + 12,
-            y = lY - 6,
-            w = listW - 24,
-            h = self.itemHeight-7
+            x = listX + 17,
+            y = lY - 4,
+            w = listW - 34,
+            h = itemHeight-4
         })
     end
 
+    
+    local infoX, infoY = x + width*0.385, y + 35
+    local infoW, infoH = width*0.57, height - 70
+    love.graphics.setColor(0.96,0.93,0.81,1)
+    love.graphics.rectangle("fill", infoX, infoY, infoW, infoH, 22, 22)
+    love.graphics.setColor(0.8,0.68,0.33, 0.19)
+    love.graphics.setLineWidth(7)
+    love.graphics.rectangle("line", infoX, infoY, infoW, infoH, 22, 22)
 
-    local infoX, infoY = x + width*0.40, y + 30
-    local infoW, infoH = width*0.55, height - 60
-    love.graphics.setColor(0.93,0.89,0.78,1)
-    love.graphics.rectangle("fill", infoX, infoY, infoW, infoH, 16, 16)
-    love.graphics.setColor(0.55, 0.40, 0.13, 0.25)
-    love.graphics.setLineWidth(4)
-    love.graphics.rectangle("line", infoX, infoY, infoW, infoH, 16, 16)
-
+    
     local sel = self.candidates[self.selected]
-    love.graphics.setColor(0.19,0.17,0.13,1)
+    love.graphics.setColor(0.09,0.05,0.01, 1)
     love.graphics.setFont(font.title.font)
-    love.graphics.print("Character Stats", infoX + 35, infoY + 17)
+    love.graphics.print("Character Stats", infoX + 56, infoY + 24)
+
 
     love.graphics.setFont(font.big.font)
-    love.graphics.setColor(0.36,0.21,0.09,1)
-    love.graphics.print("Name: ", infoX + 35, infoY + 80)
-    love.graphics.setColor(0.17,0.06,0,1)
-    love.graphics.print(sel.name or "", infoX + 140, infoY + 80)
+    love.graphics.setColor(0.13,0.07,0.02, 1)
+    love.graphics.print("Name:", infoX + 48, infoY + 94)
+    love.graphics.setColor(0.48,0.05,0,1)
+    love.graphics.print(sel.name or "", infoX + 210, infoY + 94)
 
-    love.graphics.setColor(0.36,0.21,0.09,1)
-    love.graphics.print("Race: ", infoX + 35, infoY + 120)
-    love.graphics.setColor(0.32,0.11,0,1)
-    love.graphics.print(sel.race and sel.race.name or "", infoX + 140, infoY + 120)
+    love.graphics.setColor(0.13,0.07,0.02, 1)
+    love.graphics.print("Race:", infoX + 48, infoY + 142)
+    love.graphics.setColor(0.43,0.11,0, 1)
+    love.graphics.print(sel.race and sel.race.name or "", infoX + 210, infoY + 142)
 
-    love.graphics.setColor(0.36,0.21,0.09,1)
-    love.graphics.print("Class: ", infoX + 35, infoY + 160)
-    love.graphics.setColor(0.23,0.09,0,1)
-    love.graphics.print(sel.class and sel.class.name or "", infoX + 140, infoY + 160)
+    love.graphics.setColor(0.13,0.07,0.02, 1)
+    love.graphics.print("Class:", infoX + 48, infoY + 186)
+    love.graphics.setColor(0.11,0.13,0.21, 1)
+    love.graphics.print(sel.class and sel.class.name or "", infoX + 210, infoY + 186)
+
 
     love.graphics.setFont(font.medium.font)
-    local sY = infoY + 220
+    local keys, vals = {}, {}
     for stat, value in pairs(sel.stats or {}) do
-        love.graphics.setColor(0.23,0.18,0.13,1)
-        love.graphics.print(string.format("%-12s:", stat), infoX + 65, sY)
-        love.graphics.setColor(0.13,0.25,0.17,1)
-        love.graphics.print(tostring(value), infoX + 210, sY)
-        sY = sY + 34
-        if sY > infoY + infoH - 100 then break end
+        table.insert(keys, stat)
+        table.insert(vals, value)
+    end
+    local col1 = math.ceil(#keys / 2)
+    local leftx, rightx = infoX+90, infoX+260
+    local sy = infoY + 260
+    local rowH = 36
+    for i=1,col1 do
+
+        love.graphics.setColor(0.22,0.17,0.09,1)
+        love.graphics.print(string.format("%-10s:", keys[i] or ""), leftx, sy)
+        love.graphics.setColor(0,0.32,0.18,1)
+        love.graphics.print(tostring(vals[i] or ""), leftx+110, sy)
+    
+        if keys[col1+i] then
+            love.graphics.setColor(0.22,0.17,0.09,1)
+            love.graphics.print(string.format("%-10s:", keys[col1+i]), rightx, sy)
+            love.graphics.setColor(0,0.32,0.18,1)
+            love.graphics.print(tostring(vals[col1+i]), rightx+110, sy)
+        end
+        sy = sy + rowH
     end
 
-    self.recruitButton.button_x = infoX + infoW - 225
-    self.recruitButton.button_y = infoY + infoH - 75
-    love.graphics.setColor(0.40, 0.30, 0.09, 0.4)
-    love.graphics.rectangle("fill", self.recruitButton.button_x + 4, self.recruitButton.button_y + 6, self.recruitButton.width, self.recruitButton.height, 10,10)
-    love.graphics.setColor(0.86,0.65,0.21,0.96)
-    love.graphics.rectangle("fill", self.recruitButton.button_x, self.recruitButton.button_y, self.recruitButton.width, self.recruitButton.height, 10,10)
-    love.graphics.setColor(0.37,0.21,0.08,1)
+    self.recruitButton.button_x = infoX + infoW - 265
+    self.recruitButton.button_y = infoY + infoH - 92
+    love.graphics.setColor(0.14,0.09,0.07,0.38)
+    love.graphics.rectangle("fill", self.recruitButton.button_x+10, self.recruitButton.button_y+12, self.recruitButton.width, self.recruitButton.height, 18,18)
+    love.graphics.setColor(0.96,0.78,0.23,0.98)
+    love.graphics.rectangle("fill", self.recruitButton.button_x, self.recruitButton.button_y, self.recruitButton.width, self.recruitButton.height, 18,18)
+    love.graphics.setColor(0.41,0.19,0,1)
     love.graphics.setLineWidth(3)
-    love.graphics.rectangle("line", self.recruitButton.button_x, self.recruitButton.button_y, self.recruitButton.width, self.recruitButton.height, 10,10)
+    love.graphics.rectangle("line", self.recruitButton.button_x, self.recruitButton.button_y, self.recruitButton.width, self.recruitButton.height, 18,18)
     love.graphics.setFont(font.button.font)
     love.graphics.setColor(1,1,1,1)
-    love.graphics.print(self.recruitButton.text, self.recruitButton.button_x + 36, self.recruitButton.button_y + 12)
+    love.graphics.print(self.recruitButton.text, self.recruitButton.button_x + 46, self.recruitButton.button_y + 18)
 end
 
 function RecruitView:keypressed(key)
