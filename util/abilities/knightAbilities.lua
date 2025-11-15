@@ -1,10 +1,12 @@
+local effectImplementations = require "util.effectImplementations"
+
 return {
     ability1 = {
         name = "Crushing Blow",
         cooldown = 2,
         passive = false,
         effect = function(user)
-            return user.stats.attack * 1.35
+            return math.floor(user.stats.attack * 0.35)  -- Fixed calculation
         end
     },
     ability2 = {
@@ -12,7 +14,7 @@ return {
         cooldown = 5,
         passive = false,
         effect = function(user)
-            user.effects.berserkTurns = 2
+            effectImplementations.berserkTurns.apply(user, 2)  -- Call apply!
         end
     },
     ability3 = {
@@ -20,7 +22,7 @@ return {
         cooldown = 3,
         passive = false,
         effect = function(user)
-            user.effects.battleCryTurns = 3
+            effectImplementations.battleCryTurns.apply(user, 3)  -- Call apply!
         end
     },
     ability4 = {
@@ -32,14 +34,15 @@ return {
         end
     },
     ability5 = {
-        name = "Crushing Blow",
+        name = "Crushing Blow+",
         cooldown = 6,
         passive = false,
         effect = function(user)
+            local baseDmg = user.stats.attack * 0.5
             if math.random() < 0.25 then
-                return (user.stats.attack * 1.5) * 2
+                return baseDmg * 2  -- Critical hit
             end
-            return user.stats.attack * 1.5
+            return baseDmg
         end
     },
 }
