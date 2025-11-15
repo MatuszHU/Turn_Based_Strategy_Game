@@ -9,6 +9,15 @@ function CombatManager:new(battle)
     return self
 end
 
+function CombatManager:HealOrAttack(attacker, target)
+    local extradmg = self.battle.extradmg
+    if extradmg < 0 then
+        self:heal(attacker, target, (extradmg * -1))
+    else
+        self:attack(attacker, target)
+    end
+end
+
 --------------------------------------------------------
 -- Executes an attack
 --------------------------------------------------------
@@ -60,14 +69,9 @@ function CombatManager:heal(healer, target, amount)
         return
     end
 
-    if battle.effectManager:isCharacterDisabled(healer) then
-        print(healer.name .. " is unable to act!")
-        return
-    end
-
     local healAmount = math.floor(amount)
     local oldHp = target.stats.hp
-    target.stats.hp = math.min(target.stats.hp + healAmount, target.stats.maxHp)
+    target.stats.hp = math.min(target.stats.hp + healAmount, target.stats.max_hp)
 
     print(string.format(
         "%s heals %s for %d HP. (%d → %d)",
@@ -105,7 +109,7 @@ end
 function CombatManager:calculateDamage(attacker, target)
     local effectManager = self.battle.effectManager
     local base, defense
-    if attacker.class == "wizard" or attacker.class == "priest" then
+    if attacker.className == "wizard" or attacker.className == "priest" then
         base = attacker.stats.magic or 0
         defense = target.stats.resistance or 0
     else

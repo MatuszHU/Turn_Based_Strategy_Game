@@ -1,3 +1,5 @@
+local effectImplementations = require "util.effectImplementations"
+
 return {
     ability1 = {
         name = "Coin Flip",
@@ -5,7 +7,8 @@ return {
         passive = false,
         effect = function(user)
             if math.random() < 0.5 then
-                user.effects.nextAttackCrit = true
+                print(user.name)
+                effectImplementations.nextAttackCrit:modifyCritChance(user, true)
                 print(user.name .. "'s next attack will be a guaranteed CRIT!")
             else
                 print(user.name .. " flips a coin... and gets NOTHING!")
@@ -18,7 +21,7 @@ return {
         cooldown = 3,
         passive = false,
         effect = function(user)
-            user.effects.deadlyPrecisionTurns = 3
+            effectImplementations.deadlyPrecisionTurns:apply(user, 3)
             print(user.name .. " gains heightened precision! +10 LUCK for 3 turns.")
         end
     },
@@ -34,6 +37,7 @@ return {
                 user.stats.hp = 0
             else
                 user.effects.russianRouletteStacks = (user.effects.russianRouletteStacks or 0) + 1
+                effectImplementations.russianRouletteStacks:modifyCritChance(user, false)
                 print(user.name .. " survives and gains +10% crit chance stack!")
             end
         end
@@ -43,7 +47,7 @@ return {
         name = "Shadow Instinct",
         cooldown = 0,
         passive = true,
-        apply = function(user)
+        effect = function(user)
             user.stats.attack = user.stats.attack + 10
             print(user.name .. " gains +10 permanent ATK from Shadow Instinct.")
         end

@@ -2,6 +2,7 @@ math.randomseed(os.time())
 local races = require "race"
 local classes = require "class"
 local SpriteManager = require "util/spriteManager"
+local possibleEffects = require "enums.possibleEffects"
 
 
 local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
@@ -23,12 +24,13 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
         name = name or "Hero",
         race = races[raceKey],
         class = classes[classKey],
+        className = classes[classKey].name,
         level = 1,
         statPoints = 0,
         baseStats = {},
         bonusStats = {},
         stats = {},
-        effects = {},
+        effects = possibleEffects,
         abilities = classes[classKey].abilities,
         spriteIndex = 1,
         isDefeated = false,

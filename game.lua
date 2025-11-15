@@ -100,11 +100,11 @@ function Game:mousepressed(x, y, button)
             return
         end
         if clicked then
-            if self.battleManager:isCharacterOnCurrentTeam(clicked) then
+            if self.battleManager:isCharacterOnCurrentTeam(clicked) and (self.battleManager.extradmg >= 0) then
                 print("Cannot attack allies.")
                 return
             end
-            self.battleManager:attack(selected, clicked)
+            self.battleManager:HealOrAttack(selected, clicked)
         end
         return
     end

@@ -1,3 +1,5 @@
+local effectImplementations = require "util.effectImplementations"
+
 return {
     ability1 = {
         name = "Flame Orb",
@@ -5,11 +7,7 @@ return {
         passive = false,
         effect = function(user)
 
-            local damage = math.floor(user.stats.magic * 1.10)
-
-            if math.random() < 0.15 then
-                target.effects.burn = 1
-            end
+            local damage = math.floor(user.stats.magic * 1.20)
             return damage
         end
     },
@@ -19,11 +17,7 @@ return {
         passive = false,
         effect = function(user)
 
-            local damage = math.floor(user.stats.magic * 1.10)
-
-            if math.random() < 0.20 then
-                target.effects.freeze = 1
-            end
+            local damage = math.floor(user.stats.magic * 1.50)
             return damage
         end
     },
@@ -39,7 +33,7 @@ return {
         name = "Arcane Insight",
         cooldown = 0,
         passive = true,
-        apply = function(user)
+        effect = function(user)
             user.stats.accuracy = user.stats.accuracy + 10
         end
     },

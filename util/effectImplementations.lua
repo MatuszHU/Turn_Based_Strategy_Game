@@ -232,14 +232,14 @@ effectImplementations.curseTurns = {
             active = true
         }
 
-        character.stats.attack = math.max(0, (character.stats.attack or 0) - 5)
-        character.stats.magic = math.max(0, (character.stats.magic or 0) - 5)
-        character.stats.defense = math.max(0, (character.stats.defense or 0) - 5)
-        character.stats.resistance = math.max(0, (character.stats.resistance or 0) - 5)
-        character.stats.accuracy = math.max(0, (character.stats.accuracy or 0) - 5)
-        character.stats.evasion = math.max(0, (character.stats.evasion or 0) - 5)
+        character.stats.attack = math.max(0, (character.stats.attack or 0) + 5)
+        character.stats.magic = math.max(0, (character.stats.magic or 0) + 5)
+        character.stats.defense = math.max(0, (character.stats.defense or 0) + 5)
+        character.stats.resistance = math.max(0, (character.stats.resistance or 0) + 5)
+        character.stats.accuracy = math.max(0, (character.stats.accuracy or 0) + 5)
+        character.stats.evasion = math.max(0, (character.stats.evasion or 0) + 5)
 
-        print(character.name .. " is weakened by a curse! (-5 to all stats for " .. duration .. " turns)")
+        print(character.name .. " is weakened by a curse! (+5 to all stats for " .. duration .. " turns)")
     end,
 
     onTurnEnd = function(character)
@@ -250,12 +250,12 @@ effectImplementations.curseTurns = {
             if eff.remaining <= 0 then
                 eff.active = false
 
-                character.stats.attack = (character.stats.attack or 0) + 5
-                character.stats.magic = (character.stats.magic or 0) + 5
-                character.stats.defense = (character.stats.defense or 0) + 5
-                character.stats.resistance = (character.stats.resistance or 0) + 5
-                character.stats.accuracy = (character.stats.accuracy or 0) + 5
-                character.stats.evasion = (character.stats.evasion or 0) + 5
+                character.stats.attack = (character.stats.attack or 0) - 5
+                character.stats.magic = (character.stats.magic or 0) - 5
+                character.stats.defense = (character.stats.defense or 0) - 5
+                character.stats.resistance = (character.stats.resistance or 0) - 5
+                character.stats.accuracy = (character.stats.accuracy or 0) - 5
+                character.stats.evasion = (character.stats.evasion or 0) - 5
 
                 character.effects.curseTurns = nil
                 print(character.name .. "'s Curse of Weakness fades.")

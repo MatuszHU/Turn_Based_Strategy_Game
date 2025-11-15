@@ -1,11 +1,12 @@
+local effectImplementations = require "util.effectImplementations"
+
 return {
     ability1 = {
         name = "Holy Mend",
         cooldown = 2,
         passive = false,
-        effect = function(user, ally)
-            local heal = ally.maxHp * 0.4
-            ally.hp = math.min(ally.hp + heal, ally.maxHp)
+        effect = function(user)
+            return -1 * (user.stats.magic * 0.6)
         end
     },
     ability2 = {
@@ -20,15 +21,15 @@ return {
         name = "Curse of Weakness",
         cooldown = 3,
         passive = false,
-        effect = function(user, target)
-            effectImplementations.curseTurns.apply(target, 3)
+        effect = function(user)
+            effectImplementations.curseTurns.apply(user, 3)
         end
     },
     ability4 = {
         name = "Divine Fortitude",
         cooldown = 0,
         passive = true,
-        apply = function(user)
+        effect = function(user)
             user.stats.resistance = user.stats.resistance + 10
         end
     },
@@ -37,8 +38,7 @@ return {
         cooldown = 6,
         passive = false,
         effect = function(user, ally)
-            local healAmount = ally.maxHp - ally.hp
-            ally.hp = ally.maxHp
+            return -1 * (user.stats.magic * 60)
         end
     }
 }

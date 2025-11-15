@@ -1,3 +1,5 @@
+local effectImplementations = require "util.effectImplementations"
+
 return {
     ability1 = {
         name = "Lance Thrust",
@@ -28,7 +30,7 @@ return {
         cooldown = 0,
         passive = true,
         effect = function(user)
-            user.effects.hasLastStand = true
+            effectImplementations.hasLastStand.apply(user)
         end
     },
     ability5 = {
@@ -36,7 +38,7 @@ return {
         cooldown = 6,
         passive = false,
         effect = function(user)
-            user.effects.shieldTurns = 1
+            effectImplementations.shieldTurns.apply(user, 1)
         end
     }
 }

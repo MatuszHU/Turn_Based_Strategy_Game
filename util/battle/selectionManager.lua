@@ -73,7 +73,7 @@ function SelectionManager:selectTarget(cell)
     print("Selected target: " .. target.name)
 
     if battle.phase == Phase.ATTACK then
-        battle.combat:attack(self.selectedCharacter, target)
+        battle.combat:HealOrAttack(self.selectedCharacter, target)
         battle.phase = Phase.END_TURN
     elseif battle.phase == Phase.USE_ABILITY then
         battle.ability:useAbility(1, self.selectedCharacter) -- or selected ability

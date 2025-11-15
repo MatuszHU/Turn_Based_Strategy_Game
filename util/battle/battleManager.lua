@@ -120,6 +120,10 @@ function BattleManager:attack(attacker, target)
     return self.combatManager:attack(attacker, target)
 end
 
+function BattleManager:HealOrAttack(attacker, target)
+    return self.combatManager:HealOrAttack(attacker, target)
+end
+
 function BattleManager:enterAttackPhase()
     return self.selectionManager:enterAttackPhase()
 end
