@@ -110,6 +110,7 @@ function BattleFlow:endBattle() -- TODO player2 has a roster
 
     -- At this point, both players have their teams intact and ready for the next battle
     print("Battle ended. Both teams are ready for the next battle.")
+    self:startBattle()
 end
 
 

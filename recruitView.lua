@@ -34,7 +34,7 @@ function RecruitView:generateCandidates(num)
     for k, _ in pairs(race_defs) do table.insert(raceKeys, k) end
     for i=1, num do
         local raceKey = raceKeys[math.random(#raceKeys)]
-        local classKey = classKeys[math.random(#classKeys)]
+        local classKey = classKeys[math.random(#classKeys-1)]
         local gender = math.random(1,2) == 1 and "male" or "female"
         local name = nameManager:getRandomName(raceKey, gender) or "a_"..i
         local spriteIndex = 1
