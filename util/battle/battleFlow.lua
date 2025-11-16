@@ -37,19 +37,44 @@ function BattleFlow:startBattle()
     self:resetDivineIntervention()
     battle:levelUpCharacters()
 
-    for _, player in ipairs(battle.players) do
+    local mapCols, mapRows = 30, 19
+
+    -- Helper to place characters randomly on their side
+    local function placeTeam(team, colStart, colEnd)
+        local occupied = {}
+        for _, char in ipairs(team) do
+            local x, y
+            repeat
+                x = math.random(colStart, colEnd)
+                y = math.random(1, mapRows)
+            until not occupied[x .. "," .. y]
+            occupied[x .. "," .. y] = true
+            char.gridX = x
+            char.gridY = y
+        end
+    end
+
+    for i, player in ipairs(battle.players) do
         for _, char in ipairs(player.team) do
+            char.isDefeated = false
             char.effects = {}
             char:setStats()
             char.passivesApplied = nil
             battle.abilityManager:applyPassiveAbilities(char)
+            battle.actedCharacters[char] = false
+        end
+        -- Assign starting positions per team
+        if i == 1 then
+            placeTeam(player.team, 1, 6)
+        else
+            placeTeam(player.team, mapCols - 5, mapCols) -- 26–31
         end
     end
 
     print("Battle started! " .. battle:getCurrentPlayer().name .. " goes first.")
 end
 
-function BattleFlow:endBattle()
+function BattleFlow:endBattle() -- TODO player2 has a roster
     local battle = self.battle
     print("Ending battle...")
 
@@ -57,50 +82,35 @@ function BattleFlow:endBattle()
 
     battle.showRecruit = false
 
-    local canRecruit = #playerTeam < 6
+    local canRecruit = false
+    for _, player in ipairs(battle.players) do
+        if #player.team < 6 then
+            canRecruit = true
+            break
+        end
+    end
+
     if canRecruit then
-        battle.showRecruit = true
-        print("Opening Recruit View...")
+        print("Opening Recruit Flow...")
+        battle.recruitFlow:start()  -- <-- this replaces the old recruitView block
+        return -- stop endBattle here until recruitment is done
     end
 
-    for _, char in ipairs(playerTeam) do
-        char.effects = {}
-    end
-    battle.playerRoster:resetAfterBattle()
-
-    local newList = {}
-    for _, c in ipairs(battle.characterManager.characters) do
-        local keep = false
-        for _, pc in ipairs(playerTeam) do
-            if c == pc then
-                keep = true
-                table.insert(newList, c)
-                break
-            end
+    -- Reset character effects for both players
+    for _, player in ipairs(battle.players) do
+        for _, char in ipairs(player.team) do
+            char.effects = {}
         end
-        if not keep then
-            battle.playerRoster.nameManager:removeName(c.name)
+        if player.id == 1 then
+            battle.playerRoster:resetAfterBattle()
+        elseif player.id == 2 then
+            battle.player2Roster:resetAfterBattle()
         end
     end
-    battle.characterManager.characters = newList
 
-    -- === Build next AI team (but do NOT start battle yet) ===
-    battle._nextAITeam = {}
-    local aiTeam = battle._nextAITeam
-
-    local aiTeamSize = math.random(#playerTeam, #playerTeam + 2)
-    local raceList = {"orc", "goblin"}
-    local classList = {"knight", "cavalry", "wizard", "priest"}
-
-    for i = 1, aiTeamSize do
-        local name = battle.playerRoster.nameManager:getRandomName("orc", "male")
-        local race = raceList[math.random(#raceList)]
-        local class = classList[math.random(#classList)]
-        local x = 25 + love.math.random(0, 3)
-        local y = 5 + love.math.random(0, 10)
-        local aiChar = battle.characterManager:addCharacter(name, race, class, math.random(1, 6), x, y)
-        table.insert(aiTeam, aiChar)
-    end
+    -- At this point, both players have their teams intact and ready for the next battle
+    print("Battle ended. Both teams are ready for the next battle.")
+    self:startBattle()
 end
 
 

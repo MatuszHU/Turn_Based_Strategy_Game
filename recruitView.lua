@@ -30,7 +30,11 @@ end
 function RecruitView:generateCandidates(num)
     local candidates = {}
     local classKeys, raceKeys = {}, {}
-    for k, _ in pairs(class_defs) do table.insert(classKeys, k) end
+    for k, _ in pairs(class_defs) do
+        if k ~= "thief" then
+            table.insert(classKeys, k)
+        end
+    end
     for k, _ in pairs(race_defs) do table.insert(raceKeys, k) end
     for i=1, num do
         local raceKey = raceKeys[math.random(#raceKeys)]
