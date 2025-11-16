@@ -39,10 +39,12 @@ function BattleFlow:startBattle()
 
     for _, player in ipairs(battle.players) do
         for _, char in ipairs(player.team) do
+            char.isDefeated = false
             char.effects = {}
             char:setStats()
             char.passivesApplied = nil
             battle.abilityManager:applyPassiveAbilities(char)
+            battle.actedCharacters[char] = false
         end
     end
 
