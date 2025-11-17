@@ -34,9 +34,9 @@
       |Backend|Különböző típusú és képességű karakterek megvalósítása|1|10|10|0|10|
 
 ---
-3. __Üzleti folyamatok modellje__
-<br>
-   ![Üzleti folyamatok modellje](./Képek/diagram.png)
+3. __Üzleti folyamatok modellje__ 
+
+![Üzleti folyamatok modellje](./Képek/diagram.png)
 ---
 4. __Követelmények__
     * Funkcionális követelmények:
