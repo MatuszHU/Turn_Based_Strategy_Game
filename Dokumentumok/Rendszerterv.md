@@ -54,8 +54,9 @@
       * GDPR-nak való megfelelés
 ---
 5. __Használati esetek__
-   ![Használati esetek](./Képek/uml.png)
-___
+
+![Használati esetek](./Képek/uml.png)
+---
 6. __Funkcionális terv__
    * Rendszerszereplők:
      * Játékos 1
