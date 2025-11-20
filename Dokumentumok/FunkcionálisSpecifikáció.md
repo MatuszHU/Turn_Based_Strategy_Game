@@ -34,14 +34,14 @@ Jelenleg kevés 2D-s stratégiai játék található a piacon
 
 ## Képernyőtervek
 
-  * Főmenü
-       * ![Főmenü](./Képek/MainMenu.png)
-     * Toborzó képernyő
-       * ![Toborzó képernyő](./Képek/Recruiting.png)
-     * Játék vége képernyő
-       * ![Játék vége](./Képek/End.png)
-     * Beállítások képernyő
-       * ![Beállítások](./Képek/End.png)
+ * Főmenü
+     ![Főmenü](./Képek/MainMenu.png)
+ * Toborzó képernyő
+     ![Toborzó képernyő](./Képek/Recruiting.png)
+ * Játék vége képernyő
+     ![Játék vége](./Képek/End.png)
+ * Beállítások képernyő
+     ![Beállítások](./Képek/End.png) 
 
 ## Forgatókönyv
 
