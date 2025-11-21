@@ -34,7 +34,7 @@ return {
         end
     },
     ability5 = {
-        name = "Crushing Blow+",
+        name = "Judgment Slash",
         cooldown = 6,
         passive = false,
         effect = function(user)

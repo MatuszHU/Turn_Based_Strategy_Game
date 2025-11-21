@@ -4,6 +4,7 @@ local CharacterManager = require "util.characterManager"
 local BattleManager = require "util.battle.battleManager"
 local Phase = require "enums.battlePhases"
 local GameInstructionsView  = require "GameInstructionsView"
+local AbilityHelpView = require "AbilityHelpView"
 
 local Game = {}
 Game.__index = Game
@@ -13,6 +14,8 @@ function Game:new()
     self:init()
     self.showHelp = false
     self.helpView = GameInstructionsView()
+    self.showAbilityHelp = false
+    self.abilityHelpView = AbilityHelpView()
 
     -- === Create teams ===
     local playerTeam = self.battleManager.playerRoster:getTeam()
@@ -66,6 +69,10 @@ function Game:draw()
     if self.battleManager.showRecruit then
         self.battleManager.recruitView:draw()
         return
+    end
+
+    if self.showAbilityHelp then
+        self.abilityHelpView:draw()
     end
 end
 
@@ -145,6 +152,19 @@ function Game:keypressed(key)
     if key == "u" then
         battle:enterUseAbilityPhase()
     end
+
+    if not self.showAbilityHelp then
+        if key == "k" and self.battleManager.phase == Phase.USE_ABILITY then
+            local char = self.battleManager.selectedCharacter
+            if char then
+                self.abilityHelpView:setCharacter(char)
+                self.showAbilityHelp = true
+            end
+        end
+    else
+        self.showAbilityHelp = false
+    end
+
 
     if key == "d" then
         battle:deselect()
