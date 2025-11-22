@@ -20,9 +20,9 @@ local function AbilityHelpView()
         love.graphics.rectangle("fill", 0, 0, w, h)
 
         love.graphics.setColor(1, 1, 1)
-        love.graphics.printf("Abilities - " .. self.character.class.name, 0, 20, w, "center")
+        love.graphics.printf("Abilities - " .. self.character.class.name, 0, 370, w, "center")
 
-        local y = 80
+        local y = 450
         for i, text in ipairs(abilities) do
             love.graphics.printf(i .. ". " .. text, 40, y, w - 80, "center")
             y = y + 40
