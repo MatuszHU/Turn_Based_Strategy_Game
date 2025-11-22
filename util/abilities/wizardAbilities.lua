@@ -2,43 +2,47 @@ local effectImplementations = require "util.effectImplementations"
 
 return {
     ability1 = {
-        name = "Lance Thrust",
+        name = "Flame Orb",
         cooldown = 2,
         passive = false,
         effect = function(user)
-            return user.stats.attack * 1.15
+
+            local damage = math.floor(user.stats.magic * 1.20)
+            return damage
         end
     },
     ability2 = {
-        name = "Iron Wall Formation",
+        name = "Frost Shard",
         cooldown = 3,
         passive = false,
         effect = function(user)
-            effectImplementations.ironWallTurns.apply(user, 3)
+
+            local damage = math.floor(user.stats.magic * 1.50)
+            return damage
         end
     },
     ability3 = {
-        name = "Battle-Hardened",
-        cooldown = 0,
-        passive = true,
+        name = "Mind Focus",
+        cooldown = 3,
+        passive = false,
         effect = function(user)
-            user.stats.defense = user.stats.defense + 10
+            effectImplementations.mindFocusTurns.apply(user, 3)
         end
     },
     ability4 = {
-        name = "Last Stand",
+        name = "Arcane Insight",
         cooldown = 0,
         passive = true,
         effect = function(user)
-            effectImplementations.hasLastStand.apply(user)
+            user.stats.accuracy = user.stats.accuracy + 10
         end
     },
     ability5 = {
-        name = "Aegis Charge",
+        name = "Meteor Burst",
         cooldown = 6,
         passive = false,
         effect = function(user)
-            effectImplementations.shieldTurns.apply(user, 1)
+            local damage = user.stats.magic * 1.60
         end
     }
 }

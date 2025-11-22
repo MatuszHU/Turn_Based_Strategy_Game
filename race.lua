@@ -11,7 +11,8 @@ return {
             evasion = 10,
             luck = 1,
             fow = 1,
-            movement = 3
+            movement = 3,
+            attackRange = 1
         }
     },
     elf = {
@@ -26,7 +27,8 @@ return {
             evasion = 13,
             luck = 3,
             fow = 4,
-            movement = 7
+            movement = 7,
+            attackRange = 1
         }
     },
     goblin = {
@@ -41,7 +43,8 @@ return {
             evasion = 25,
             luck = 7,
             fow = 2,
-            movement = 7
+            movement = 7,
+            attackRange = 1
         }
     },
     human = {
@@ -56,7 +59,8 @@ return {
             evasion = 20,
             luck = 2,
             fow = 4,
-            movement = 5
+            movement = 5,
+            attackRange = 1
         }
     },
     dwarf = {
@@ -71,7 +75,8 @@ return {
             evasion = 12,
             luck = 2,
             fow = 2,
-            movement = 3
+            movement = 3,
+            attackRange = 1
         }
     }
 }

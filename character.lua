@@ -2,6 +2,7 @@ math.randomseed(os.time())
 local races = require "race"
 local classes = require "class"
 local SpriteManager = require "util/spriteManager"
+local possibleEffects = require "enums.possibleEffects"
 
 
 local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
@@ -23,14 +24,17 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
         name = name or "Hero",
         race = races[raceKey],
         class = classes[classKey],
+        className = classes[classKey].name,
         level = 1,
         statPoints = 0,
         baseStats = {},
         bonusStats = {},
         stats = {},
         effects = {},
+        abilities = classes[classKey].abilities,
         spriteIndex = 1,
         isDefeated = false,
+        passivesApplied = nil,
         offsetX = 0,
         gridX = gridX,
         gridY = gridY,
@@ -41,13 +45,11 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
                 self.stats[k] = self.baseStats[k] + self.bonusStats[k]
             end
             self.stats.max_hp = self.stats.hp
-            self.stats.attackRange = 1
-            self.bonusStats = {}
         end,
         levelUp = function(self)
             self.level = self.level + 1
             self.statPoints = self.statPoints + (math.floor((self.level - 1) / 4) + 3)
-            
+
             local availableStats = {}
             for statName in pairs(self.baseStats) do
                 table.insert(availableStats, statName)
@@ -56,7 +58,7 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
             local allocation = randomAllocate(self.statPoints, availableStats)
             print(string.format("[LEVEL UP] %s reached level %d and gained %d stat points!",
                 self.name, self.level, self.statPoints))
-            
+
             for stat, points in pairs(allocation) do
                 self.bonusStats[stat] = (self.bonusStats[stat] or 0) + points
                 print(string.format("  +%d %s", points, stat))
@@ -69,14 +71,14 @@ local function Character(name, raceKey, classKey, spriteIndex, gridX, gridY)
         levelUp = function(self)
             self.level = self.level + 1
             self.statPoints = self.statPoints + (math.floor((self.level - 1) / 4) + 3)
-            
+
             local availableStats = {}
             for statName in pairs(self.baseStats) do
                 table.insert(availableStats, statName)
             end
 
             local allocation = randomAllocate(self.statPoints, availableStats)
-            
+
             for stat, points in pairs(allocation) do
                 self.bonusStats[stat] = (self.bonusStats[stat] or 0) + points
             end
