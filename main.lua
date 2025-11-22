@@ -2,6 +2,7 @@
 local love = require "love"
 local Button = require "Button"
 local settingsView = require "SettingsView"
+local StartGame = require "StartGame"
 local font = require "util.fonts"
 local characterManager = require "util.characterManager"
 local playerRoster = require "util.playerRoster"
@@ -11,7 +12,8 @@ local GameManager = require "game"
 local game = {
 
     state = {
-        menu = true,
+        startup = true,
+        menu = false,
         paused = false,
         running = false,
     }
@@ -82,6 +84,7 @@ function love.mousepressed(x,y,button,touch,presses)
 end
 
 function love.load()
+    StartGame.load()
     love.window.setFullscreen(true)
     background = love.graphics.newImage("assets/backgrounds/medievalBG.jpg")
     love.window.setTitle("Fantasy Yoga Club")
@@ -94,6 +97,12 @@ function love.load()
 end
 
 function love.update(dt)
+     if not StartGame.isDone() then
+        StartGame.update(dt)
+        if StartGame.isDone() then
+            changeGameState("menu")
+        end
+    end
     mouse.x, mouse.y = love.mouse.getPosition()
     if game.state["running"] and gameInstance then
         gameInstance:update(dt)
@@ -101,6 +110,9 @@ function love.update(dt)
 end
 
 function love.draw()
+     if game.state["startup"] then
+        StartGame.draw()
+    end
     local screenWidth = love.graphics.getWidth()
     local screenHeight = love.graphics.getHeight()
 
