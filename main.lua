@@ -84,8 +84,7 @@ end
 function love.load()
     love.window.setFullscreen(true)
     background = love.graphics.newImage("assets/backgrounds/medievalBG.jpg")
-    love.window.setTitle("CS2 Nagy Projekt")
-
+    love.window.setTitle("Fantasy Yoga Club")
     buttons.menu.play = Button("Start", loadMap, "ForestCamp", 150, 40)
     buttons.menu.continue = Button("Continue", nil, nil, 150, 40)
     buttons.menu.setting = Button("Settings", function() settings:changeDisplay() end, nil, 150, 40)
@@ -116,8 +115,7 @@ function love.draw()
         else
             love.graphics.clear(0.8, 0.7, 0.6)
         end
-
-        love.graphics.printf("Játék címe",font.title.font,0,100,love.graphics.getWidth(), "center")
+        love.graphics.printf("Fantasy Yoga Club",font.title.font,0,100,love.graphics.getWidth(), "center")
         love.graphics.setFont(font.button.font)
         buttons.menu.play:texturedDraw(screenWidth/2 - buttons.menu.play.width/2, 200)
         buttons.menu.continue:texturedDraw(screenWidth/2 - buttons.menu.continue.width/2, 270)
