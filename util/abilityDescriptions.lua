@@ -12,7 +12,7 @@ local AbilityDescriptions = {
         "Iron Wall Formation - For 3 turns, increases Defense and Resistanse.",
         "Battle-Hardened - Passive: Permanently increases base Defense by 10.",
         "Last Stand - Passive: Once per battle, survives a fatal hit with 1 HP.",
-        "Aegis Charge - Rases deffense for 1 turn."
+        "Aegis Charge - Rases defense for 1 turn."
     },
 
     wizard = {
